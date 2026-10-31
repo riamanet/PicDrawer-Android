@@ -29,17 +29,19 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Unpack source
-        run: unzip -q PicDrawer-Android-v0.6.zip -d appsrc
-
-      - name: Fix Android button API
-        run: sed -i 's/\.setTextAllCaps(/.setAllCaps(/g' appsrc/app/src/main/java/com/dalkong/phototidy/MainActivity.java
+      - name: Unpack latest PicDrawer
+        run: |
+          ZIP=$(ls PicDrawer-Android-v*.zip | sort -V | tail -n 1)
+          test -n "$ZIP"
+          echo "Building $ZIP"
+          unzip -q "$ZIP" -d appsrc
 
       - name: Build APK
         run: gradle --no-daemon -p appsrc :app:assembleDebug
 
       - uses: actions/upload-artifact@v4
         with:
-          name: PicDrawer-APK
+          name: PicDrawer-v0.8-APK
           path: appsrc/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14
