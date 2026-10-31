@@ -32,6 +32,9 @@ jobs:
       - name: Unpack source
         run: unzip -q PicDrawer-Android-v0.6.zip -d appsrc
 
+      - name: Fix Android button API
+        run: sed -i 's/\.setTextAllCaps(/.setAllCaps(/g' appsrc/app/src/main/java/com/dalkong/phototidy/MainActivity.java
+
       - name: Build APK
         run: gradle --no-daemon -p appsrc :app:assembleDebug
 
